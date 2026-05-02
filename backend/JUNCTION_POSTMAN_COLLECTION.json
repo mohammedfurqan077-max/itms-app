@@ -1,0 +1,357 @@
+{
+  "info": {
+    "name": "ITMS - Junction Management",
+    "description": "Complete API collection for Junction Management System",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "admin_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "junction_id",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Login as Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "pm.collectionVariables.set(\"admin_token\", jsonData.tokens.access_token);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@itms.com\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Junctions",
+      "item": [
+        {
+          "name": "Create Junction",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "pm.collectionVariables.set(\"junction_id\", jsonData.id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Main Square Junction\",\n  \"location\": \"Main Square, Downtown\",\n  \"ip_address\": \"192.168.1.100\",\n  \"device_id\": \"RPI-001\",\n  \"description\": \"Primary junction at main square\",\n  \"zone\": \"Zone A\",\n  \"config_metadata\": \"{\\\"lanes\\\": 4, \\\"has_camera\\\": true}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/junctions",
+              "host": ["{{base_url}}"],
+              "path": ["junctions"]
+            }
+          }
+        },
+        {
+          "name": "List Junctions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/junctions?page=1&page_size=10",
+              "host": ["{{base_url}}"],
+              "path": ["junctions"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "page_size",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Junction by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/junctions/{{junction_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["junctions", "{{junction_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Junction",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"location\": \"Main Square, Downtown (Updated)\",\n  \"description\": \"Primary junction at main square - Updated\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/junctions/{{junction_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["junctions", "{{junction_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Junction Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"online\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/junctions/{{junction_id}}/status",
+              "host": ["{{base_url}}"],
+              "path": ["junctions", "{{junction_id}}", "status"]
+            }
+          }
+        },
+        {
+          "name": "Delete Junction",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/junctions/{{junction_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["junctions", "{{junction_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Filter by Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/junctions?status=online",
+              "host": ["{{base_url}}"],
+              "path": ["junctions"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "online"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Filter by Zone",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/junctions?zone=Zone A",
+              "host": ["{{base_url}}"],
+              "path": ["junctions"],
+              "query": [
+                {
+                  "key": "zone",
+                  "value": "Zone A"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Search Junctions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/junctions?search=Main",
+              "host": ["{{base_url}}"],
+              "path": ["junctions"],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "Main"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Device Communication",
+      "item": [
+        {
+          "name": "Process Heartbeat",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"device_id\": \"RPI-001\",\n  \"status\": \"online\",\n  \"metadata\": {\n    \"cpu_temp\": 45.2,\n    \"uptime\": 86400\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/junctions/heartbeat",
+              "host": ["{{base_url}}"],
+              "path": ["junctions", "heartbeat"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Statistics & Monitoring",
+      "item": [
+        {
+          "name": "Get Junction Statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/junctions/stats/overview",
+              "host": ["{{base_url}}"],
+              "path": ["junctions", "stats", "overview"]
+            }
+          }
+        },
+        {
+          "name": "Check Offline Junctions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/junctions/health/check-offline?timeout_minutes=5",
+              "host": ["{{base_url}}"],
+              "path": ["junctions", "health", "check-offline"],
+              "query": [
+                {
+                  "key": "timeout_minutes",
+                  "value": "5"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
