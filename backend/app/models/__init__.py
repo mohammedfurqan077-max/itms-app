@@ -3,6 +3,7 @@ from app.db.base import Base
 from app.models.user import User, Permission, UserPermission, Session
 from app.models.junction import Junction
 from app.models.system_state import SystemState
+from app.models.command import Command
 
 # To be imported when created:
 # from app.models.junction import JunctionState
@@ -18,6 +19,7 @@ __all__ = [
     "Session",
     "Junction",
     "SystemState",
+    "Command",
     # "JunctionState",
     # "Command",
     # "AuditLog"
