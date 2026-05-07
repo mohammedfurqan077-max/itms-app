@@ -5,7 +5,16 @@ const nextConfig = {
   reactStrictMode: true,
   turbopack: {
     root: path.resolve(__dirname)
-  }
+  },
+  // Environment variables
+  env: {
+    NEXT_PUBLIC_API_BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL || '/api',
+    NEXT_PUBLIC_SOCKET_URL: process.env.NEXT_PUBLIC_SOCKET_URL || '',
+  },
+  // Disable image optimization for Railway
+  images: {
+    unoptimized: true,
+  },
 };
 
 module.exports = nextConfig;
