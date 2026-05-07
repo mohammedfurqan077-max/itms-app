@@ -29,7 +29,7 @@ echo "✓ SECRET_KEY is set"
 # Run database migrations
 echo ""
 echo "Running database migrations..."
-alembic upgrade head
+python scripts/run_migrations.py
 
 if [ $? -eq 0 ]; then
     echo "✓ Migrations completed successfully"
@@ -44,4 +44,4 @@ echo "Starting application..."
 echo "Listening on 0.0.0.0:${PORT:-8000}"
 echo ""
 
-exec uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}
+exec python -m uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}
