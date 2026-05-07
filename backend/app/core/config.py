@@ -3,7 +3,7 @@ Application configuration management
 """
 from pydantic_settings import BaseSettings
 from pydantic import Field, validator
-from typing import List
+from typing import List, Union
 import secrets
 import os
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
@@ -36,8 +36,8 @@ class Settings(BaseSettings):
     RATE_LIMIT_PER_MINUTE: int = 60
     
     # CORS
-    ALLOWED_ORIGINS: List[str] = ["http://localhost:3000", "http://localhost:8080"]
-    ALLOWED_HOSTS: List[str] = ["*"]
+    ALLOWED_ORIGINS: Union[str, List[str]] = "http://localhost:3000,http://localhost:8080"
+    ALLOWED_HOSTS: Union[str, List[str]] = "*"
     
     # Redis (optional)
     REDIS_URL: str = "redis://localhost:6379/0"
