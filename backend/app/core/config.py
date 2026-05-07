@@ -5,6 +5,7 @@ from pydantic_settings import BaseSettings
 from pydantic import Field, validator
 from typing import List
 import secrets
+import os
 
 
 class Settings(BaseSettings):
@@ -17,7 +18,7 @@ class Settings(BaseSettings):
     LOG_LEVEL: str = "INFO"
     
     # Database
-    DATABASE_URL: str = Field(..., env="DATABASE_URL")
+    DATABASE_URL: str = Field("", env="DATABASE_URL")
     
     # JWT
     SECRET_KEY: str = Field(default_factory=lambda: secrets.token_urlsafe(32))
@@ -70,6 +71,9 @@ class Settings(BaseSettings):
 
     @validator("DATABASE_URL", pre=True)
     def normalize_database_url(cls, v):
+        v = v or os.getenv("DATABASE_PRIVATE_URL") or os.getenv("DATABASE_PUBLIC_URL")
+        if not v:
+            raise ValueError("DATABASE_URL is required. Add a PostgreSQL database to Railway and reference its DATABASE_URL in this service.")
         if isinstance(v, str) and v.startswith("postgresql://"):
             return v.replace("postgresql://", "postgresql+asyncpg://", 1)
         return v
