@@ -6,6 +6,7 @@ from pydantic import Field, validator
 from typing import List
 import secrets
 import os
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 
 class Settings(BaseSettings):
@@ -75,7 +76,15 @@ class Settings(BaseSettings):
         if not v:
             raise ValueError("DATABASE_URL is required. Add a PostgreSQL database to Railway and reference its DATABASE_URL in this service.")
         if isinstance(v, str) and v.startswith("postgresql://"):
-            return v.replace("postgresql://", "postgresql+asyncpg://", 1)
+            v = v.replace("postgresql://", "postgresql+asyncpg://", 1)
+        if isinstance(v, str) and v.startswith("postgresql+asyncpg://"):
+            parts = urlsplit(v)
+            query = dict(parse_qsl(parts.query, keep_blank_values=True))
+            sslmode = query.pop("sslmode", None)
+            query.pop("channel_binding", None)
+            if sslmode and sslmode != "disable":
+                query.setdefault("ssl", "require")
+            v = urlunsplit((parts.scheme, parts.netloc, parts.path, urlencode(query), parts.fragment))
         return v
     
     class Config:
