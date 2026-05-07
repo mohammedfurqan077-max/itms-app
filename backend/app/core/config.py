@@ -67,6 +67,12 @@ class Settings(BaseSettings):
         if isinstance(v, str):
             return [host.strip() for host in v.split(",")]
         return v
+
+    @validator("DATABASE_URL", pre=True)
+    def normalize_database_url(cls, v):
+        if isinstance(v, str) and v.startswith("postgresql://"):
+            return v.replace("postgresql://", "postgresql+asyncpg://", 1)
+        return v
     
     class Config:
         env_file = ".env"
