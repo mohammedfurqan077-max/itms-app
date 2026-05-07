@@ -7,7 +7,6 @@ Create Date: 2026-04-30 16:00:00.000000
 """
 from alembic import op
 import sqlalchemy as sa
-from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
 revision = '003'
@@ -30,13 +29,13 @@ def upgrade() -> None:
         sa.Column('location', sa.String(length=255), nullable=True, comment='Physical location or address of the junction'),
         sa.Column('ip_address', sa.String(length=45), nullable=False, comment='IP address of the controlling device'),
         sa.Column('device_id', sa.String(length=100), nullable=True, comment='Unique device identifier (e.g., Raspberry Pi serial number)'),
-        sa.Column('status', sa.Enum('online', 'offline', 'maintenance', 'error', name='junctionstatus'), nullable=False, comment='Current junction status'),
+        sa.Column('status', sa.String(length=50), nullable=False, server_default='offline', comment='Current junction status'),
         sa.Column('last_seen', sa.DateTime(), nullable=True, comment='Last time the junction device sent a heartbeat'),
         sa.Column('description', sa.Text(), nullable=True, comment='Additional description or notes about the junction'),
         sa.Column('zone', sa.String(length=50), nullable=True, comment="Zone or area classification (e.g., 'Zone A', 'Downtown')"),
         sa.Column('config_metadata', sa.Text(), nullable=True, comment='JSON configuration for junction-specific settings'),
-        sa.Column('created_at', sa.DateTime(), nullable=False, comment='Junction creation timestamp'),
-        sa.Column('updated_at', sa.DateTime(), nullable=False, comment='Last update timestamp'),
+        sa.Column('created_at', sa.DateTime(), nullable=False, server_default=sa.text('now()'), comment='Junction creation timestamp'),
+        sa.Column('updated_at', sa.DateTime(), nullable=False, server_default=sa.text('now()'), comment='Last update timestamp'),
         sa.PrimaryKeyConstraint('id')
     )
     
@@ -76,16 +75,13 @@ def downgrade() -> None:
     # Drop table
     op.drop_table('junctions')
     
-    # Drop enum type
-    op.execute("DROP TYPE IF EXISTS junctionstatus")
-    
     # Recreate placeholder junctions table
     op.create_table(
         'junctions',
         sa.Column('id', sa.Integer(), nullable=False),
         sa.Column('name', sa.String(length=100), nullable=False),
         sa.Column('ip_address', sa.String(length=45), nullable=False),
-        sa.Column('created_at', sa.DateTime(), nullable=False),
+        sa.Column('created_at', sa.DateTime(), nullable=False, server_default=sa.text('now()')),
         sa.PrimaryKeyConstraint('id')
     )
     op.create_index('ix_junctions_id', 'junctions', ['id'], unique=False)

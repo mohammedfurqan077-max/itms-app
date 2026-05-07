@@ -74,12 +74,12 @@ async def get_current_active_user(
     return current_user
 
 
-def require_role(required_role: UserRole):
+def require_role(required_role: str):
     """
     Dependency factory to require specific user role
     
     Args:
-        required_role: Required user role
+        required_role: Required user role (string constant from UserRole)
     
     Returns:
         Dependency function

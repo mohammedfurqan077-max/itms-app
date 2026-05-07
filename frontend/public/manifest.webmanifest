@@ -1,0 +1,18 @@
+{
+  "name": "ITMS Admin Panel",
+  "short_name": "ITMS",
+  "description": "Web dashboard for intelligent traffic signal monitoring and control.",
+  "start_url": "/login",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#07111f",
+  "theme_color": "#07111f",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

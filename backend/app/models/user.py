@@ -2,22 +2,21 @@
 User models: User, Permission, UserPermission, Session
 """
 from datetime import datetime
-from sqlalchemy import String, Integer, DateTime, Boolean, ForeignKey, Enum as SQLEnum, Text
+from sqlalchemy import String, Integer, DateTime, Boolean, ForeignKey, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import List, Optional
-import enum
 
 from app.db.base import Base
 
 
-class UserRole(str, enum.Enum):
-    """User role enumeration"""
+class UserRole:
+    """User role constants"""
     ADMIN = "admin"
     JAWAN = "jawan"
 
 
-class UserStatus(str, enum.Enum):
-    """User status enumeration"""
+class UserStatus:
+    """User status constants"""
     ACTIVE = "active"
     INACTIVE = "inactive"
     LOCKED = "locked"
@@ -31,8 +30,8 @@ class User(Base):
     name: Mapped[str] = mapped_column(String(100), nullable=False)
     email: Mapped[str] = mapped_column(String(255), unique=True, index=True, nullable=False)
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
-    role: Mapped[UserRole] = mapped_column(SQLEnum(UserRole), nullable=False, default=UserRole.JAWAN)
-    status: Mapped[UserStatus] = mapped_column(SQLEnum(UserStatus), nullable=False, default=UserStatus.ACTIVE)
+    role: Mapped[str] = mapped_column(String(50), nullable=False, default=UserRole.JAWAN)
+    status: Mapped[str] = mapped_column(String(50), nullable=False, default=UserStatus.ACTIVE)
     
     # Login attempt tracking
     failed_login_attempts: Mapped[int] = mapped_column(Integer, default=0, nullable=False)

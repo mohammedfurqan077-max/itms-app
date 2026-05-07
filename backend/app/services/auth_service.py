@@ -57,9 +57,8 @@ class AuthService:
             raise ValidationException(detail="Email already registered")
         
         # Validate role
-        try:
-            role = UserRole(register_data.role.lower())
-        except ValueError:
+        role = register_data.role.lower()
+        if role not in [UserRole.ADMIN, UserRole.JAWAN]:
             raise ValidationException(detail=f"Invalid role: {register_data.role}")
         
         # Only admins can create admin users

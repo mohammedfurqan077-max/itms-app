@@ -24,8 +24,8 @@ def upgrade() -> None:
         sa.Column('name', sa.String(length=100), nullable=False),
         sa.Column('email', sa.String(length=255), nullable=False),
         sa.Column('password_hash', sa.String(length=255), nullable=False),
-        sa.Column('role', sa.Enum('ADMIN', 'JAWAN', name='userrole'), nullable=False),
-        sa.Column('status', sa.Enum('ACTIVE', 'INACTIVE', 'LOCKED', name='userstatus'), nullable=False),
+        sa.Column('role', sa.String(length=50), nullable=False, server_default='jawan'),
+        sa.Column('status', sa.String(length=50), nullable=False, server_default='active'),
         sa.Column('failed_login_attempts', sa.Integer(), nullable=False, server_default='0'),
         sa.Column('locked_until', sa.DateTime(), nullable=True),
         sa.Column('last_login', sa.DateTime(), nullable=True),
@@ -111,6 +111,3 @@ def downgrade() -> None:
     op.drop_index(op.f('ix_users_email'), table_name='users')
     op.drop_index(op.f('ix_users_id'), table_name='users')
     op.drop_table('users')
-    
-    op.execute('DROP TYPE IF EXISTS userstatus')
-    op.execute('DROP TYPE IF EXISTS userrole')

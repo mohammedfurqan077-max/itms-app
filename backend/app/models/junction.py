@@ -2,16 +2,15 @@
 Junction models - Traffic junction management
 """
 from datetime import datetime
-from sqlalchemy import String, Integer, DateTime, Enum as SQLEnum, Text, Index
+from sqlalchemy import String, Integer, DateTime, Text, Index
 from sqlalchemy.orm import Mapped, mapped_column
 from typing import Optional
-import enum
 
 from app.db.base import Base
 
 
-class JunctionStatus(str, enum.Enum):
-    """Junction status enumeration"""
+class JunctionStatus:
+    """Junction status constants"""
     ONLINE = "online"
     OFFLINE = "offline"
     MAINTENANCE = "maintenance"
@@ -63,8 +62,8 @@ class Junction(Base):
     )
     
     # Status tracking
-    status: Mapped[JunctionStatus] = mapped_column(
-        SQLEnum(JunctionStatus, values_callable=lambda x: [e.value for e in x]),
+    status: Mapped[str] = mapped_column(
+        String(50),
         nullable=False,
         default=JunctionStatus.OFFLINE,
         index=True,
