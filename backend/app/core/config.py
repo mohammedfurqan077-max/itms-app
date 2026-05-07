@@ -36,7 +36,7 @@ class Settings(BaseSettings):
     RATE_LIMIT_PER_MINUTE: int = 60
     
     # CORS
-    ALLOWED_ORIGINS: Union[str, List[str]] = "http://localhost:3000,http://localhost:8080"
+    ALLOWED_ORIGINS: Union[str, List[str]] = "http://localhost:3000,http://localhost:8080,https://lively-art-production-5c53.up.railway.app"
     ALLOWED_HOSTS: Union[str, List[str]] = "*"
     
     # Redis (optional)
